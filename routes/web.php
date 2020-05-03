@@ -13,7 +13,7 @@
 
 /** @var Laravel\Lumen\Routing\Router $router */
 $router->get('/', function () use ($router) {
-    if ($router->app->environment()) {
+    if ($router->app->environment('local')) {
         return $router->app->version();
     }
     return redirect('https://akabe.co/');
