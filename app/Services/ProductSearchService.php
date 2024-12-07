@@ -34,10 +34,9 @@ class ProductSearchService
         ];
         if ($useAffiliate) {
             $affiliateId = env('RAKUTEN_AFL_ID');
-            if (empty($affiliateId)) {
-                abort('500', 'Affiliate ID not set.');
+            if (filled($affiliateId)) {
+                $query['affiliateId'] = $affiliateId;
             }
-            $query['affiliateId'] = env('RAKUTEN_AFL_ID');
         }
 
         $communicator = ProductSearchCommunicatorFactory::getCommunicator();

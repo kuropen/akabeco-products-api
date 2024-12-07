@@ -95,8 +95,6 @@ $app->configure('app');
 // $app->register(App\Providers\AuthServiceProvider::class);
 // $app->register(App\Providers\EventServiceProvider::class);
 
-$app->register(Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class);
-
 /*
 |--------------------------------------------------------------------------
 | Load The Application Routes

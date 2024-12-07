@@ -1,0 +1,38 @@
+name: "Caddyfile Test"
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/test-caddyfile.yml
+      - Caddyfile
+      - Dockerfile
+  pull_request:
+    paths:
+      - .github/workflows/test-caddyfile.yml
+      - Caddyfile
+      - Dockerfile
+    types:
+      - opened
+      - synchronize
+      - reopened
+
+jobs:
+  test:
+    name: "Run Test"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Install xcaddy
+        run: go install github.com/caddyserver/xcaddy/cmd/xcaddy@latest
+      - name: Extract Caddy version from Dockerfile
+        id: caddy_version_check
+        run: echo CADDY_VERSION=$(cat ${{ github.workspace }}/Dockerfile | awk '{match($0, /caddy:[0-9].[0-9].[0-9]-builder/); m = substr($0, RSTART, RLENGTH); if(length(m)){print substr(m, 7, 5);}}') >> "$GITHUB_OUTPUT"
+      - name: Build caddy with caddy-supervisor
+        run: xcaddy build v${{steps.caddy_version_check.outputs.CADDY_VERSION}} --with github.com/baldinof/caddy-supervisor
+      - name: Test Caddyfile
+        run: ./caddy validate -c ./Caddyfile
