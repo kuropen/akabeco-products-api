@@ -3,7 +3,7 @@ name: "Caddyfile Test"
 on:
   push:
     branches:
-      - main
+      - master
     paths:
       - .github/workflows/test-caddyfile.yml
       - Caddyfile
