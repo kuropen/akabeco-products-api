@@ -1,14 +1,14 @@
-FROM caddy:2.8.4-builder AS caddy-builder
+FROM public.ecr.aws/docker/library/caddy:2.8.4-builder AS caddy-builder
 
 RUN xcaddy build --with github.com/baldinof/caddy-supervisor
 
-FROM php:8.3-fpm
+FROM public.ecr.aws/docker/library/php:8.3-fpm
 
 RUN apt update && apt install -y libpq-dev libxml2-dev libzip-dev busybox-static
 RUN docker-php-ext-install pgsql pdo_pgsql xml zip
 RUN docker-php-ext-enable opcache
 
-COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+COPY --from=public.ecr.aws/docker/library/composer:2 /usr/bin/composer /usr/bin/composer
 
 COPY ./Caddyfile /etc/caddy/Caddyfile
 COPY --from=caddy-builder /usr/bin/caddy /usr/bin/caddy
